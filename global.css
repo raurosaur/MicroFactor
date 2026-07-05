@@ -5,3 +5,13 @@
 .nutrient-view {
   @apply bg-primary-400/20 mx-1 my-5 p-2 rounded-xl;
 }
+
+.base-view {
+  @apply flex-1 flex-col 
+    justify-between text-text-50  
+     bg-background-900;
+}
+
+.meal-list-item {
+  @apply bg-primary-400/10 text-text-50 text-xl p-2;
+}
