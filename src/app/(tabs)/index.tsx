@@ -1,7 +1,7 @@
 import DailyScore from "@/components/DailyScore";
+import Header from "@/components/header";
 import MacroNutrientView from "@/components/Macros/MacroNutrientView";
 import MicroNutrientView from "@/components/Micros/MicroNutrientView";
-import Header from "@/components/header";
 import { View } from "react-native";
 
 export default function App() {

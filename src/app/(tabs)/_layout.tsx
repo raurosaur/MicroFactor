@@ -31,6 +31,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="FoodItemPage"
+        options={{
+          title: "Test",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
