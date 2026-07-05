@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nutrient-view {
+  @apply bg-primary-400/20 mx-1 my-5 p-2 rounded-xl;
+}

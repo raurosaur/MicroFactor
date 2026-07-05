@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MicroFactor",
-    "slug": "MicroFactor",
+    "slug": "microfactor",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -21,7 +21,8 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon.png",
+      "bundler": "metro"
     },
     "plugins": [
       "expo-router",
@@ -39,6 +40,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ab1e8948-bd5c-478a-8955-2bd77194dd21"
+      }
+    },
+    "owner": "raurosaur"
   }
 }
