@@ -8,10 +8,14 @@
 
 .base-view {
   @apply flex-1 flex-col 
-    justify-between text-text-50  
+     text-text-50  
      bg-background-900;
 }
 
 .meal-list-item {
   @apply bg-primary-400/10 text-text-50 text-xl p-2;
+}
+
+.micro-div {
+  @apply bg-primary-400/20 my-2;
 }
