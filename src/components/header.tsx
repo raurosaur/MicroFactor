@@ -1,28 +1,43 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
+import { dateNext, datePrev, isToday, withinWeekFromToday } from "@/utils/data";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
 
 type HeaderProps = {
-  date?: string;
+  date: Date;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
 };
 
-function isToday(date: string) {
-  return date === new Date().getDate().toString();
-}
-export default function Header({
-  date = new Date().getDate().toString(),
-}: HeaderProps) {
+export default function Header({ date, setDate }: HeaderProps) {
+  // const [yest, setYest] = useState(true);
+
   return (
     <View className="hdr flex-row justify-between items-center p-4">
-      <Ionicons name="caret-back-circle-outline" color="white" size={28} />
+      <TouchableOpacity
+        onPress={() => {
+          datePrev(setDate);
+        }}
+      >
+        <Ionicons name="caret-back-circle-outline" color="white" size={28} />
+      </TouchableOpacity>
       <Text className="text-white text-2xl text-bold text-center p-4">
-        {isToday(date) ? "TODAY" : date}
+        {isToday(date)
+          ? "TODAY"
+          : withinWeekFromToday(date)
+            ? date.getDay()
+            : date.toDateString()}
       </Text>
-      <Ionicons
-        name="caret-forward-circle-outline"
-        color={isToday(date) ? "gray" : "white"}
-        size={28}
-      />
+      <TouchableOpacity
+        onPress={() => {
+          if (!isToday(date)) dateNext(setDate);
+        }}
+      >
+        <Ionicons
+          name="caret-forward-circle-outline"
+          color={isToday(date) ? "gray" : "white"}
+          size={28}
+        />
+      </TouchableOpacity>
     </View>
   );
 }

@@ -1,6 +1,6 @@
 //DATA FROM https://www.ncbi.nlm.nih.gov/books/NBK56068/table/summarytables.t2/?report=objectonly
 
-type LifeStage =
+export type LifeStage =
   | "child_1_3"
   | "child_4_8"
   | "male_9_13"

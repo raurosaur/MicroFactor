@@ -21,7 +21,7 @@ export type userSettings = {
   weight: number;
 };
 
-const DEFAULT: userSettings = {
+export const DEFAULT_LS: userSettings = {
   age: 20,
   isFemale: false,
   pregnant: false,
@@ -150,8 +150,8 @@ export async function deleteMeal(
 
 export async function getUserSettings(): Promise<userSettings> {
   const settings = await AsyncStorage.getItem("settings");
-  if (!settings) await setUserSettings(DEFAULT);
-  return settings ? JSON.parse(settings) : DEFAULT;
+  if (!settings) await setUserSettings(DEFAULT_LS);
+  return settings ? JSON.parse(settings) : DEFAULT_LS;
 }
 export async function setUserSettings(settings: userSettings) {
   await AsyncStorage.setItem("settings", JSON.stringify(settings));

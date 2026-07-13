@@ -101,3 +101,38 @@ export function calculateBMR(
 
   return act * (x + (isFemale ? -161 : 5));
 }
+
+export function isToday(date: Date) {
+  const today = new Date();
+  return (
+    today.getDate() === date.getDate() && today.getMonth() === date.getMonth()
+  );
+}
+
+export function withinWeekFromToday(date: Date) {
+  const today = new Date();
+
+  today.setHours(0, 0, 0, 0);
+
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+
+  const diffMs = target.getTime() - today.getTime();
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+  return diffDays >= 0 && diffDays <= 7;
+}
+export function datePrev(setDate: React.Dispatch<React.SetStateAction<Date>>) {
+  setDate((prev) => {
+    const next = new Date(prev);
+    next.setDate(next.getDate() - 1);
+    return next;
+  });
+}
+export function dateNext(setDate: React.Dispatch<React.SetStateAction<Date>>) {
+  setDate((prev) => {
+    const next = new Date(prev);
+    next.setDate(next.getDate() + 1);
+    return next;
+  });
+}

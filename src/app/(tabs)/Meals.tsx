@@ -5,19 +5,15 @@ import { NutrientObject } from "@/utils/data";
 import { getDailyNutrients, getMeals, hasMeals, Meal } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
-type MealsType = {
-  date?: string;
-};
 
-export default function Meals({
-  date = new Date().getDate().toString(),
-}: MealsType) {
+export default function Meals() {
   const [meals, setMeals] = useState<Record<string, Meal[]>>();
   const [totalDayNutrients, setTotalDayNutrients] = useState<NutrientObject>();
+  const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {
     async function loadMeals() {
-      const exists = await hasMeals(date);
+      const exists = await hasMeals(date.getDate().toString());
 
       if (!exists) {
         setMeals({
@@ -30,7 +26,7 @@ export default function Meals({
         return;
       }
 
-      const loadedMeals = await getMeals(date);
+      const loadedMeals = await getMeals(date.getDate().toString());
       setMeals(loadedMeals);
 
       const daily = await getDailyNutrients();
@@ -41,7 +37,7 @@ export default function Meals({
   });
   return (
     <View className="base-view">
-      <Header date={date} />
+      <Header date={date} setDate={setDate} />
       <ScrollView className="flex-1">
         <MacroNutrientView
           protein={
