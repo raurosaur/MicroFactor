@@ -165,6 +165,9 @@ export default function Settings() {
             lactating,
             height,
             weight,
+            protein: 0.3,
+            fats: 0.3,
+            carbs: 0.4,
           };
           await setUserSettings(settings);
         }}

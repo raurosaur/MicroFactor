@@ -21,24 +21,30 @@ export default function MacroNutrientView({
   const [bmr, setBmr] = useState(2000);
 
   const [userSettings, setUserSettings] = useState<userSettings>();
-
+  const [MAX, setMAX] = useState({ carbs: 0.4, protein: 0.3, fats: 0.3 });
   useEffect(() => {
     async function index() {
       setUserSettings(await getUserSettings());
 
       if (userSettings) {
-        const { isFemale, age, pregnant, lactating, height, weight } =
-          userSettings;
+        const {
+          isFemale,
+          age,
+          pregnant,
+          lactating,
+          height,
+          weight,
+          protein,
+          carbs,
+          fats,
+        } = userSettings;
         setBmr(calculateBMR(height, weight, age, isFemale));
+        setMAX({ carbs, protein, fats });
       }
     }
 
     index();
   }, []);
-
-  const MAX_CARBS = (0.4 * bmr) / 4;
-  const MAX_PROTEIN = (0.3 * bmr) / 4;
-  const MAX_FATS = (0.3 * bmr) / 9;
 
   return (
     <View className="macros nutrient-view">
@@ -49,13 +55,17 @@ export default function MacroNutrientView({
         value={energy}
         unit="kcal"
       />
-      <NutrientElement name="Protein" max_value={MAX_PROTEIN} value={protein} />
+      <NutrientElement
+        name="Protein"
+        max_value={MAX.protein * bmr}
+        value={protein}
+      />
       <NutrientElement
         name="Carbohydrates"
-        max_value={MAX_CARBS}
+        max_value={MAX.carbs * bmr}
         value={carbs}
       />
-      <NutrientElement name="Fats" max_value={MAX_FATS} value={fats} />
+      <NutrientElement name="Fats" max_value={MAX.fats * bmr} value={fats} />
     </View>
   );
 }

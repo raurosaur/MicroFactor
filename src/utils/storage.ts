@@ -19,6 +19,9 @@ export type userSettings = {
   lactating: boolean;
   height: number;
   weight: number;
+  protein: number;
+  carbs: number;
+  fats: number;
 };
 
 export const DEFAULT_LS: userSettings = {
@@ -28,6 +31,9 @@ export const DEFAULT_LS: userSettings = {
   lactating: false,
   height: 160,
   weight: 60,
+  protein: 0.3,
+  fats: 0.3,
+  carbs: 0.4,
 };
 
 async function updateNutrients(

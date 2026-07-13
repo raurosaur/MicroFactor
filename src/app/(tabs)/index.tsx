@@ -2,7 +2,12 @@ import DailyScore from "@/components/DailyScore";
 import Header from "@/components/header";
 import MacroNutrientView from "@/components/MacroNutrientView";
 import MicroNutrientView from "@/components/MicroNutrientView";
-import { microDisplayNames, NutrientLocal, NutrientObject } from "@/utils/data";
+import {
+  calculateBMR,
+  microDisplayNames,
+  NutrientLocal,
+  NutrientObject,
+} from "@/utils/data";
 import { getLifeStage, RDA } from "@/utils/rda";
 import { getDailyNutrients, getUserSettings } from "@/utils/storage";
 import { useEffect, useState } from "react";
@@ -33,21 +38,49 @@ export default function App() {
       );
     }
     async function calculateScore() {
-      const nutrients = await getDailyNutrients(date.getDay(), date.getMonth());
-      const { age, isFemale, pregnant, lactating } = await getUserSettings();
+      const nutrients = await getDailyNutrients(
+        date.getDate(),
+        date.getMonth(),
+      );
+      const {
+        age,
+        isFemale,
+        pregnant,
+        lactating,
+        height,
+        weight,
+        protein,
+        carbs,
+        fats,
+      } = await getUserSettings();
       setLifeStage(getLifeStage(isFemale, age, pregnant, lactating));
       let count = 0;
       let sum = 0;
       nutrients?.micros.forEach((nutrient) => {
         if (nutrient.nutrientId in RDA[lifestage]) {
-          sum += Math.max(
+          sum += Math.min(
             nutrient.value / RDA[lifestage][nutrient.nutrientId][0],
             1,
           );
           count++;
         }
       });
-      if (!isNaN(sum / count)) setScore(sum / count);
+      const micro_score = !isNaN(sum / count) ? sum / count : 0;
+      let macro_score = 0;
+      const energy = calculateBMR(height, weight, age, isFemale);
+      macro_score +=
+        (nutrients?.macros.find((x) => x.nutrientId === 1003)?.value ?? 0) /
+        600;
+      macro_score +=
+        (nutrients?.macros.find((x) => x.nutrientId === 1005)?.value ?? 0) /
+        800;
+      macro_score +=
+        (nutrients?.macros.find((x) => x.nutrientId === 1004)?.value ?? 0) /
+        600;
+      macro_score +=
+        (nutrients?.macros.find((x) => x.nutrientId === 1008)?.value ?? 0) /
+        2000;
+      setScore((0.6 * micro_score + 0.4 * macro_score) / 2);
     }
     loadMeals();
     calculateScore();
