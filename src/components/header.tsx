@@ -15,17 +15,17 @@ export default function Header({ date, setDate }: HeaderProps) {
     <View className="hdr flex-row justify-between items-center p-4">
       <TouchableOpacity
         onPress={() => {
-          datePrev(setDate);
+          if (withinWeekFromToday(date)) datePrev(setDate);
         }}
       >
-        <Ionicons name="caret-back-circle-outline" color="white" size={28} />
+        <Ionicons
+          name="caret-back-circle-outline"
+          color={withinWeekFromToday(date) ? "white" : "gray"}
+          size={28}
+        />
       </TouchableOpacity>
       <Text className="text-white text-2xl text-bold text-center p-4">
-        {isToday(date)
-          ? "TODAY"
-          : withinWeekFromToday(date)
-            ? date.getDay()
-            : date.toDateString()}
+        {isToday(date) ? "TODAY" : date.toDateString()}
       </Text>
       <TouchableOpacity
         onPress={() => {

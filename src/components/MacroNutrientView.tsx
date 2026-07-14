@@ -37,8 +37,9 @@ export default function MacroNutrientView({
           protein,
           carbs,
           fats,
+          act,
         } = userSettings;
-        setBmr(calculateBMR(height, weight, age, isFemale));
+        setBmr(calculateBMR(height, weight, age, isFemale, act));
         setMAX({ carbs, protein, fats });
       }
     }
@@ -51,21 +52,25 @@ export default function MacroNutrientView({
       <Text className={nutrient_heading_style}>MACRONUTRIENTS</Text>
       <NutrientElement
         name="Energy"
-        max_value={bmr}
+        max_value={Math.ceil(bmr)}
         value={energy}
         unit="kcal"
       />
       <NutrientElement
         name="Protein"
-        max_value={MAX.protein * bmr}
+        max_value={Math.ceil((MAX.protein * bmr) / 4)}
         value={protein}
       />
       <NutrientElement
         name="Carbohydrates"
-        max_value={MAX.carbs * bmr}
+        max_value={Math.ceil((MAX.carbs * bmr) / 4)}
         value={carbs}
       />
-      <NutrientElement name="Fats" max_value={MAX.fats * bmr} value={fats} />
+      <NutrientElement
+        name="Fats"
+        max_value={Math.ceil((MAX.fats * bmr) / 9)}
+        value={fats}
+      />
     </View>
   );
 }

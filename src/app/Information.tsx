@@ -2,8 +2,10 @@ import DailyScore from "@/components/DailyScore";
 import { microDisplayNames, NutrientLocal } from "@/utils/data";
 import { INFO } from "@/utils/info";
 import { getLifeStage, LifeStage, RDA } from "@/utils/rda";
+import { getMeals, hasMeals, Meal } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 type MicroInfoType = {
@@ -26,6 +28,19 @@ export default function InformationPage() {
   const max_val =
     RDA[(params.lifestage as LifeStage) ?? getLifeStage(false, 20)][id];
   const score = current / max_val[0];
+
+  const [meals, setMeals] = useState<Record<string, Meal[]>>();
+
+  useEffect(() => {
+    async function loadMeals() {
+      const exists = await hasMeals(params.date as string);
+      const loadedMeals = await getMeals(params.date as string);
+      setMeals(loadedMeals);
+    }
+
+    loadMeals();
+  });
+
   return (
     <ScrollView className="base-view">
       <View className="hdr flex-row justify-between items-center p-4">
@@ -62,6 +77,7 @@ export default function InformationPage() {
       </View>
       <View className="micro-div">
         <Text className={headingStyle}>Today's Top Sources</Text>
+        {/* {micronutrients.find()} */}
         <Text className="text-text-50 text-l p-2"></Text>
       </View>
     </ScrollView>

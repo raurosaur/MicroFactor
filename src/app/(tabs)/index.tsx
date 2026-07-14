@@ -52,6 +52,7 @@ export default function App() {
         protein,
         carbs,
         fats,
+        act,
       } = await getUserSettings();
       setLifeStage(getLifeStage(isFemale, age, pregnant, lactating));
       let count = 0;
@@ -67,19 +68,20 @@ export default function App() {
       });
       const micro_score = !isNaN(sum / count) ? sum / count : 0;
       let macro_score = 0;
-      const energy = calculateBMR(height, weight, age, isFemale);
+      const energy = calculateBMR(height, weight, age, isFemale, act);
+      console.log(energy);
       macro_score +=
         (nutrients?.macros.find((x) => x.nutrientId === 1003)?.value ?? 0) /
-        600;
+        Math.ceil((protein * energy) / 4);
       macro_score +=
         (nutrients?.macros.find((x) => x.nutrientId === 1005)?.value ?? 0) /
-        800;
+        Math.ceil((carbs * energy) / 4);
       macro_score +=
         (nutrients?.macros.find((x) => x.nutrientId === 1004)?.value ?? 0) /
-        600;
+        Math.ceil((fats * energy) / 9);
       macro_score +=
         (nutrients?.macros.find((x) => x.nutrientId === 1008)?.value ?? 0) /
-        2000;
+        energy;
       setScore((0.6 * micro_score + 0.4 * macro_score) / 2);
     }
     loadMeals();
@@ -112,6 +114,7 @@ export default function App() {
       <MicroNutrientView
         micronutrients={totalDayNutrients?.micros ?? []}
         lifestage={lifestage}
+        date={date}
       />
     </ScrollView>
   );

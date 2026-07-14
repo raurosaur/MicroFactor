@@ -9,11 +9,13 @@ import NutrientElement from "./NutrientElement";
 type PropType = {
   micronutrients: NutrientLocal[];
   lifestage: LifeStage;
+  date?: Date;
 };
 
 export default function MicroNutrientView({
   micronutrients,
   lifestage,
+  date = new Date(),
 }: PropType) {
   const nutrient_heading_style = "text-text-50 text-2xl p-2";
   const [userSettings, setUserSettings] = useState<userSettings>();
@@ -46,6 +48,7 @@ export default function MicroNutrientView({
                 id: nutrient.nutrientId,
                 micronutrients: JSON.stringify(micronutrients),
                 lifestage,
+                date: date.getDate().toString(),
               },
             }}
             push

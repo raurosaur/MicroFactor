@@ -22,6 +22,7 @@ export type userSettings = {
   protein: number;
   carbs: number;
   fats: number;
+  act?: number;
 };
 
 export const DEFAULT_LS: userSettings = {
@@ -34,6 +35,7 @@ export const DEFAULT_LS: userSettings = {
   protein: 0.3,
   fats: 0.3,
   carbs: 0.4,
+  act: 1.25,
 };
 
 async function updateNutrients(
@@ -160,5 +162,6 @@ export async function getUserSettings(): Promise<userSettings> {
   return settings ? JSON.parse(settings) : DEFAULT_LS;
 }
 export async function setUserSettings(settings: userSettings) {
+  console.log(settings);
   await AsyncStorage.setItem("settings", JSON.stringify(settings));
 }

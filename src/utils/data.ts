@@ -34,7 +34,7 @@ export const microDisplayNames: Record<number, string> = {
   1103: "Selenium",
 
   // Vitamins
-  1106: "Vitamin A, RAE",
+  1106: "Vitamin A",
   1110: "Vitamin D",
   1114: "Vitamin D",
   1162: "Vitamin C",
@@ -94,11 +94,11 @@ export function calculateBMR(
   weight: number,
   age: number,
   isFemale: boolean,
-  act = 1,
+  act = 1.2,
 ) {
   // Mifflin-St Jeor Equation:
   const x = 10 * weight + 6.25 * height - 5 * age;
-
+  console.log(act);
   return act * (x + (isFemale ? -161 : 5));
 }
 
@@ -117,7 +117,7 @@ export function withinWeekFromToday(date: Date) {
   const target = new Date(date);
   target.setHours(0, 0, 0, 0);
 
-  const diffMs = target.getTime() - today.getTime();
+  const diffMs = today.getTime() - target.getTime();
   const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
   return diffDays >= 0 && diffDays <= 7;
