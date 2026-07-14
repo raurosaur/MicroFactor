@@ -58,7 +58,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
     // 1003:[13,'g'],//Protein
     1106: [300, "mcg"], //Vitamin A
     1162: [15, "mg"], //Vitamin C
-    1110: [15, "mcg"], //Vitamin D
     1114: [15, "mcg"], //Vitamin D
     1109: [6, "mg"], //Vitamin E
     1185: [30, "mcg"], //Vitamin K
@@ -75,7 +74,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   child_4_8: {
     1106: [400, "mcg"], //Vitamin A
     1162: [25, "mg"], //Vitamin C
-    1110: [15, "mcg"], //Vitamin D
     1114: [15, "mcg"], //Vitamin D
     1109: [7, "mg"], //Vitamin E
     1185: [55, "mcg"], //Vitamin K
@@ -92,7 +90,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   male_9_13: {
     1106: [600, "mcg"],
     1162: [45, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [11, "mg"],
     1185: [60, "mcg"],
@@ -109,7 +106,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   male_14_18: {
     1106: [900, "mcg"],
     1162: [75, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [75, "mcg"],
@@ -126,7 +122,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   male_19_30: {
     1106: [900, "mcg"],
     1162: [90, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [120, "mcg"],
@@ -143,7 +138,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   male_31_50: {
     1106: [900, "mcg"],
     1162: [90, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [120, "mcg"],
@@ -160,7 +154,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   male_51_70: {
     1106: [900, "mcg"],
     1162: [90, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [120, "mcg"],
@@ -177,7 +170,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   male_70_plus: {
     1106: [900, "mcg"],
     1162: [90, "mg"],
-    1110: [20, "mcg"],
     1114: [20, "mcg"],
     1109: [15, "mg"],
     1185: [120, "mcg"],
@@ -194,7 +186,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   female_9_13: {
     1106: [600, "mcg"],
     1162: [45, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [11, "mg"],
     1185: [60, "mcg"],
@@ -211,7 +202,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   female_14_18: {
     1106: [700, "mcg"],
     1162: [65, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [75, "mcg"],
@@ -228,7 +218,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   female_19_30: {
     1106: [700, "mcg"],
     1162: [75, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [90, "mcg"],
@@ -245,7 +234,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   female_31_50: {
     1106: [700, "mcg"],
     1162: [75, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [90, "mcg"],
@@ -262,7 +250,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   female_51_70: {
     1106: [700, "mcg"],
     1162: [75, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [90, "mcg"],
@@ -279,7 +266,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   female_70_plus: {
     1106: [700, "mcg"],
     1162: [75, "mg"],
-    1110: [20, "mcg"],
     1114: [20, "mcg"],
     1109: [15, "mg"],
     1185: [90, "mcg"],
@@ -296,7 +282,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   pregnant_14_18: {
     1106: [750, "mcg"],
     1162: [80, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [75, "mcg"],
@@ -313,7 +298,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   pregnant_19_30: {
     1106: [770, "mcg"],
     1162: [85, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [90, "mcg"],
@@ -330,7 +314,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   pregnant_31_50: {
     1106: [770, "mcg"],
     1162: [85, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [15, "mg"],
     1185: [90, "mcg"],
@@ -347,7 +330,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   lactating_14_18: {
     1106: [1200, "mcg"],
     1162: [115, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [19, "mg"],
     1185: [75, "mcg"],
@@ -364,7 +346,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   lactating_19_30: {
     1106: [1300, "mcg"],
     1162: [120, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [19, "mg"],
     1185: [90, "mcg"],
@@ -381,7 +362,6 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
   lactating_31_50: {
     1106: [1300, "mcg"],
     1162: [120, "mg"],
-    1110: [15, "mcg"],
     1114: [15, "mcg"],
     1109: [19, "mg"],
     1185: [90, "mcg"],

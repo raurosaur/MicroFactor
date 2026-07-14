@@ -27,7 +27,7 @@ export const INFO: Record<number, InfoType> = {
       "carrots",
     ],
   },
-  1110: {
+  1114: {
     information:
       "Vitamin D promotes calcium absorption in the gut and maintains adequate serum calcium and phosphate concentrations to enable normal bone mineralization and to prevent hypocalcemic tetany (involuntary contraction of muscles, leading to cramps and spasms). It is also needed for bone growth and bone remodeling by osteoblasts and osteoclasts. Without sufficient vitamin D, bones can become thin, brittle, or misshapen. Vitamin D sufficiency prevents rickets in children and osteomalacia in adults. Together with calcium, vitamin D also helps protect older adults from osteoporosis.",
     sources: [

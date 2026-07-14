@@ -35,7 +35,6 @@ export const microDisplayNames: Record<number, string> = {
 
   // Vitamins
   1106: "Vitamin A",
-  1110: "Vitamin D",
   1114: "Vitamin D",
   1162: "Vitamin C",
   1165: "Thiamin",
