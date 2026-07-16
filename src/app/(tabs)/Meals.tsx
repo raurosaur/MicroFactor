@@ -3,7 +3,8 @@ import MacroNutrientView from "@/components/MacroNutrientView";
 import MealTime from "@/components/MealTime";
 import { NutrientObject } from "@/utils/data";
 import { getDailyNutrients, getMeals, hasMeals, Meal } from "@/utils/storage";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function Meals() {
@@ -11,30 +12,32 @@ export default function Meals() {
   const [totalDayNutrients, setTotalDayNutrients] = useState<NutrientObject>();
   const [date, setDate] = useState<Date>(new Date());
 
-  useEffect(() => {
-    async function loadMeals() {
-      const exists = await hasMeals(date.getDate().toString());
+  useFocusEffect(
+    useCallback(() => {
+      async function loadMeals() {
+        const exists = await hasMeals(date.getDate().toString());
 
-      if (!exists) {
-        setMeals({
-          breakfast: [],
-          lunch: [],
-          dinner: [],
-          snacks: [],
-        });
-        setTotalDayNutrients({ macros: [], micros: [] });
-        return;
+        if (!exists) {
+          setMeals({
+            breakfast: [],
+            lunch: [],
+            dinner: [],
+            snacks: [],
+          });
+          setTotalDayNutrients({ macros: [], micros: [] });
+          return;
+        }
+
+        const loadedMeals = await getMeals(date.getDate().toString());
+        setMeals(loadedMeals);
+
+        const daily = await getDailyNutrients(date.getDate());
+        setTotalDayNutrients(daily ?? { macros: [], micros: [] });
       }
 
-      const loadedMeals = await getMeals(date.getDate().toString());
-      setMeals(loadedMeals);
-
-      const daily = await getDailyNutrients();
-      setTotalDayNutrients(daily ?? { macros: [], micros: [] });
-    }
-
-    loadMeals();
-  });
+      loadMeals();
+    }, [date]),
+  );
   return (
     <View className="base-view">
       <Header date={date} setDate={setDate} />
@@ -57,10 +60,10 @@ export default function Meals() {
               ?.value ?? 0
           }
         />
-        <MealTime name="Breakfast" meal={meals?.breakfast} />
-        <MealTime name="Lunch" meal={meals?.lunch} />
-        <MealTime name="Dinner" meal={meals?.dinner} />
-        <MealTime name="Snacks" meal={meals?.snacks} />
+        <MealTime name="Breakfast" meal={meals?.breakfast} date={date} />
+        <MealTime name="Lunch" meal={meals?.lunch} date={date} />
+        <MealTime name="Dinner" meal={meals?.dinner} date={date} />
+        <MealTime name="Snacks" meal={meals?.snacks} date={date} />
       </ScrollView>
     </View>
   );

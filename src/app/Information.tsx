@@ -1,12 +1,13 @@
+import BackArrow from "@/components/BackArrow";
 import DailyScore from "@/components/DailyScore";
 import { microDisplayNames, NutrientLocal } from "@/utils/data";
 import { INFO } from "@/utils/info";
 import { getLifeStage, LifeStage, RDA } from "@/utils/rda";
-import { getMeals, hasMeals, Meal } from "@/utils/storage";
-import { Ionicons } from "@expo/vector-icons";
+import SortedArray from "@/utils/sortedarray";
+import { getMeals, getTopSources, hasMeals, Meal } from "@/utils/storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 type MicroInfoType = {
   name: string;
@@ -28,7 +29,7 @@ export default function InformationPage() {
   const max_val =
     RDA[(params.lifestage as LifeStage) ?? getLifeStage(false, 20)][id];
   const score = current / max_val[0];
-
+  const [sources, setSources] = useState<SortedArray>(new SortedArray());
   const [meals, setMeals] = useState<Record<string, Meal[]>>();
 
   useEffect(() => {
@@ -38,15 +39,19 @@ export default function InformationPage() {
       setMeals(loadedMeals);
     }
 
+    async function loadSources() {
+      const sources = await getTopSources(id);
+      if (sources) setSources(sources);
+    }
+
     loadMeals();
+    loadSources();
   });
 
   return (
     <ScrollView className="base-view">
       <View className="hdr flex-row justify-between items-center p-4">
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back-circle-outline" color="white" size={28} />
-        </TouchableOpacity>
+        <BackArrow onPress={() => router.back()} color="white" />
         <Text className="text-white text-2xl text-bold text-center p-4 flex-1">
           {microDisplayNames[id] ?? ""}
         </Text>
@@ -73,7 +78,15 @@ export default function InformationPage() {
       </View>
       <View className="micro-div">
         <Text className={headingStyle}>Past Top Sources</Text>
-        <Text className="text-text-50 text-l p-2"></Text>
+        {sources.length > 0 ? (
+          sources.toArray().map((x, i) => (
+            <Text key={i} className="text-text-50 text-l p-2">
+              {x[1]}
+            </Text>
+          ))
+        ) : (
+          <Text className="text-text-50 text-l p-2">Nothing to show here</Text>
+        )}
       </View>
       <View className="micro-div">
         <Text className={headingStyle}>Today's Top Sources</Text>

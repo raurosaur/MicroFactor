@@ -1,5 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NutrientObject } from "./data";
+import { INFO } from "./info";
+import SortedArray from "./sortedarray";
 
 export type Meal = {
   fdcId: string;
@@ -38,12 +40,8 @@ export const DEFAULT_LS: userSettings = {
   act: 1.25,
 };
 
-async function updateNutrients(
-  nutri: NutrientObject,
-  date = new Date().getDate(),
-  month = new Date().getMonth(),
-) {
-  const KEY = `nutri-${date}-${month}`;
+async function updateNutrients(nutri: NutrientObject, date: number) {
+  const KEY = `nutri-${date}`;
   const asyncNutriObject = await AsyncStorage.getItem(KEY);
   const nutrients: NutrientObject = asyncNutriObject
     ? JSON.parse(asyncNutriObject)
@@ -96,9 +94,8 @@ async function removeNutrients(
 
 export async function getDailyNutrients(
   date = new Date().getDate(),
-  month = new Date().getMonth(),
 ): Promise<NutrientObject | null> {
-  const item = await AsyncStorage.getItem(`nutri-${date}-${month}`);
+  const item = await AsyncStorage.getItem(`nutri-${date}`);
   return item ? (JSON.parse(item) as NutrientObject) : null;
 }
 export async function hasMeals(date: string): Promise<boolean> {
@@ -124,6 +121,7 @@ export async function addMeals(
   nutrients: NutrientObject,
   amount: string,
   mealtime: "breakfast" | "lunch" | "dinner" | "snacks",
+  createdAt = new Date().getDate().toString(),
 ): Promise<Meal> {
   const newMeal: Meal = {
     fdcId,
@@ -132,14 +130,24 @@ export async function addMeals(
     nutrients,
     amount,
     id: Date.now().toString(),
-    createdAt: new Date().getDate().toString(),
+    createdAt,
     mealtime,
   };
   const meals = await getMeals(newMeal.createdAt);
   meals[mealtime].push(newMeal);
   await AsyncStorage.setItem(newMeal.createdAt, JSON.stringify(meals));
-  // console.log(meals, mealtime, newMeal.createdAt);
-  updateNutrients(newMeal.nutrients);
+  console.log(createdAt);
+  nutrients.micros.map((nutrient) => {
+    if (nutrient.nutrientId in INFO) {
+      setTopSources(
+        nutrient.nutrientId,
+        [brandName, description].join(" ").trim(),
+        +amount,
+      );
+    }
+  });
+
+  updateNutrients(newMeal.nutrients, +createdAt); // done to prevent massive code changes
   return newMeal;
 }
 
@@ -154,6 +162,24 @@ export async function deleteMeal(
   );
   meals[mealtime] = meals[mealtime].filter((meal) => meal.id !== mealid);
   await AsyncStorage.setItem(date, JSON.stringify(meals));
+}
+
+export async function getTopSources(nutrientId: number) {
+  const asyncArr = await AsyncStorage.getItem(`TOP5-${nutrientId}`);
+  if (!asyncArr) return new SortedArray();
+  return new SortedArray(JSON.parse(asyncArr));
+}
+export async function setTopSources(
+  nutrientId: number,
+  name: string,
+  amount: number,
+) {
+  const array = await getTopSources(nutrientId);
+  array.add([amount, name]);
+  await AsyncStorage.setItem(
+    `TOP5-${nutrientId}`,
+    JSON.stringify(array.toArray()),
+  );
 }
 
 export async function getUserSettings(): Promise<userSettings> {

@@ -5,11 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 function changeAmount(
@@ -29,6 +29,7 @@ async function AddToToday(
   amount: string,
   multiplier: number,
   mealtime: "breakfast" | "lunch" | "dinner" | "snacks",
+  date: string,
 ) {
   const newNutrients: NutrientObject = { macros: [], micros: [] };
   console.assert(!!nutrients);
@@ -42,14 +43,22 @@ async function AddToToday(
     newNutrient.value *= multiplier;
     return newNutrient;
   });
-  await addMeals(fdcId, description, brandName, newNutrients, amount, mealtime);
+  await addMeals(
+    fdcId,
+    description,
+    brandName,
+    newNutrients,
+    amount,
+    mealtime,
+    date,
+  );
   console.log("Added");
   router.dismiss(2);
 }
 
 export default function FoodItemPage() {
   const params = useLocalSearchParams();
-  const { fdcId, description, brandName, mealtime } = params;
+  const { fdcId, description, brandName, mealtime, date } = params;
   const nutrients = cleanNutrients(JSON.parse(params.nutrients as string));
   const [amount, setAmount] = useState("100");
   const [multiplier, setMultiplier] = useState(1);
@@ -68,7 +77,7 @@ export default function FoodItemPage() {
         <TextInput
           className="bg-primary-200 text-xl rounded-xl text-center p-3 w-20"
           placeholder="100g"
-          value={amount}
+          // value={amount}
           onChangeText={(value) =>
             changeAmount(value === "" ? "100" : value, setAmount, setMultiplier)
           }
@@ -120,6 +129,7 @@ export default function FoodItemPage() {
             amount,
             multiplier,
             mealtime as "breakfast" | "lunch" | "dinner" | "snacks",
+            date as string,
           );
         }}
       >

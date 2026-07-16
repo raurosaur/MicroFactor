@@ -1,7 +1,8 @@
 import { Text, TouchableOpacity, View } from "react-native";
 
-import { dateNext, datePrev, isToday, withinWeekFromToday } from "@/utils/data";
+import { dateNext, isToday } from "@/utils/data";
 import Ionicons from "@expo/vector-icons/build/Ionicons";
+import BackArrow from "./BackArrow";
 
 type HeaderProps = {
   date: Date;
@@ -13,7 +14,8 @@ export default function Header({ date, setDate }: HeaderProps) {
 
   return (
     <View className="hdr flex-row justify-between items-center p-4">
-      <TouchableOpacity
+      <BackArrow date={date} setDate={setDate} />
+      {/* <TouchableOpacity
         onPress={() => {
           if (withinWeekFromToday(date)) datePrev(setDate);
         }}
@@ -23,7 +25,7 @@ export default function Header({ date, setDate }: HeaderProps) {
           color={withinWeekFromToday(date) ? "white" : "gray"}
           size={28}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <Text className="text-white text-2xl text-bold text-center p-4">
         {isToday(date) ? "TODAY" : date.toDateString()}
       </Text>

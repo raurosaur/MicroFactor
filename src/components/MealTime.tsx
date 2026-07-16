@@ -5,16 +5,23 @@ import { Alert, Text, TouchableOpacity, View } from "react-native";
 type MealTimeType = {
   name: string;
   meal: Meal[] | undefined;
+  date: Date;
 };
 
-export default function MealTime({ name, meal }: MealTimeType) {
+export default function MealTime({ name, meal, date }: MealTimeType) {
   const textStyle = "text-text-50 p-3 text-xl";
   return (
     <View className="my-2">
       <View className="flex-row justify-between items-center bg-secondary-800">
         <Text className="text-white p-1 text-2xl ml-2">{name}</Text>
         <Link
-          href={{ pathname: "/Search", params: { name: name.toLowerCase() } }}
+          href={{
+            pathname: "/Search",
+            params: {
+              name: name.toLowerCase(),
+              date: date.getDate().toString(),
+            },
+          }}
           push
           asChild
         >

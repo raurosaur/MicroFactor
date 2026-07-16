@@ -34,7 +34,7 @@ async function searchApi(
 }
 
 export default function Search() {
-  const { name } = useLocalSearchParams();
+  const { name, date } = useLocalSearchParams();
   const [query, setQuery] = useState("");
   const [result, setResults] = useState<SearchResultFood[]>([]);
   // console.log(result);
@@ -72,6 +72,7 @@ export default function Search() {
                     ),
                   ),
                   mealtime: name,
+                  date: date,
                 },
               }}
               push

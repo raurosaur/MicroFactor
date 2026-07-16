@@ -10,7 +10,8 @@ import {
 } from "@/utils/data";
 import { getLifeStage, RDA } from "@/utils/rda";
 import { getDailyNutrients, getUserSettings } from "@/utils/storage";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 export default function App() {
@@ -19,74 +20,73 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [lifestage, setLifeStage] = useState(getLifeStage(false, 20));
 
-  useEffect(() => {
-    async function loadMeals() {
-      const daily = await getDailyNutrients(date.getDate(), date.getMonth());
-      setTotalDayNutrients(
-        daily ?? {
-          macros: [],
-          micros: Object.keys(RDA["child_1_3"]).map(
-            (id: string) =>
-              ({
-                nutrientId: +id,
-                value: 0,
-                unitName: RDA["child_1_3"][+id][1],
-                name: microDisplayNames[+id],
-              }) as NutrientLocal,
-          ),
-        },
-      );
-    }
-    async function calculateScore() {
-      const nutrients = await getDailyNutrients(
-        date.getDate(),
-        date.getMonth(),
-      );
-      const {
-        age,
-        isFemale,
-        pregnant,
-        lactating,
-        height,
-        weight,
-        protein,
-        carbs,
-        fats,
-        act,
-      } = await getUserSettings();
-      setLifeStage(getLifeStage(isFemale, age, pregnant, lactating));
-      let count = 0;
-      let sum = 0;
-      nutrients?.micros.forEach((nutrient) => {
-        if (nutrient.nutrientId in RDA[lifestage]) {
-          sum += Math.min(
-            nutrient.value / RDA[lifestage][nutrient.nutrientId][0],
-            1,
-          );
-          count++;
-        }
-      });
-      const micro_score = !isNaN(sum / count) ? sum / count : 0;
-      let macro_score = 0;
-      const energy = calculateBMR(height, weight, age, isFemale, act);
-      console.log(energy);
-      macro_score +=
-        (nutrients?.macros.find((x) => x.nutrientId === 1003)?.value ?? 0) /
-        Math.ceil((protein * energy) / 4);
-      macro_score +=
-        (nutrients?.macros.find((x) => x.nutrientId === 1005)?.value ?? 0) /
-        Math.ceil((carbs * energy) / 4);
-      macro_score +=
-        (nutrients?.macros.find((x) => x.nutrientId === 1004)?.value ?? 0) /
-        Math.ceil((fats * energy) / 9);
-      macro_score +=
-        (nutrients?.macros.find((x) => x.nutrientId === 1008)?.value ?? 0) /
-        energy;
-      setScore((0.6 * micro_score + 0.4 * macro_score) / 2);
-    }
-    loadMeals();
-    calculateScore();
-  }, [date]);
+  useFocusEffect(
+    useCallback(() => {
+      async function loadMeals() {
+        const daily = await getDailyNutrients(date.getDate());
+        setTotalDayNutrients(
+          daily ?? {
+            macros: [],
+            micros: Object.keys(RDA["child_1_3"]).map(
+              (id: string) =>
+                ({
+                  nutrientId: +id,
+                  value: 0,
+                  unitName: RDA["child_1_3"][+id][1],
+                  name: microDisplayNames[+id],
+                }) as NutrientLocal,
+            ),
+          },
+        );
+      }
+      async function calculateScore() {
+        const nutrients = await getDailyNutrients(date.getDate());
+        const {
+          age,
+          isFemale,
+          pregnant,
+          lactating,
+          height,
+          weight,
+          protein,
+          carbs,
+          fats,
+          act,
+        } = await getUserSettings();
+        setLifeStage(getLifeStage(isFemale, age, pregnant, lactating));
+        let count = 0;
+        let sum = 0;
+        nutrients?.micros.forEach((nutrient) => {
+          if (nutrient.nutrientId in RDA[lifestage]) {
+            sum += Math.min(
+              nutrient.value / RDA[lifestage][nutrient.nutrientId][0],
+              1,
+            );
+            count++;
+          }
+        });
+        const micro_score = !isNaN(sum / count) ? sum / count : 0;
+        let macro_score = 0;
+        const energy = calculateBMR(height, weight, age, isFemale, act);
+        // console.log(energy);
+        macro_score +=
+          (nutrients?.macros.find((x) => x.nutrientId === 1003)?.value ?? 0) /
+          Math.ceil((protein * energy) / 4);
+        macro_score +=
+          (nutrients?.macros.find((x) => x.nutrientId === 1005)?.value ?? 0) /
+          Math.ceil((carbs * energy) / 4);
+        macro_score +=
+          (nutrients?.macros.find((x) => x.nutrientId === 1004)?.value ?? 0) /
+          Math.ceil((fats * energy) / 9);
+        macro_score +=
+          (nutrients?.macros.find((x) => x.nutrientId === 1008)?.value ?? 0) /
+          energy;
+        setScore((0.6 * micro_score + 0.4 * macro_score) / 2);
+      }
+      loadMeals();
+      calculateScore();
+    }, [date]),
+  );
   return (
     <ScrollView className="base-view">
       <Header date={date} setDate={setDate} />

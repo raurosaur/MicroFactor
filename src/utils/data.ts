@@ -97,7 +97,7 @@ export function calculateBMR(
 ) {
   // Mifflin-St Jeor Equation:
   const x = 10 * weight + 6.25 * height - 5 * age;
-  console.log(act);
+  // console.log(act);
   return act * (x + (isFemale ? -161 : 5));
 }
 
