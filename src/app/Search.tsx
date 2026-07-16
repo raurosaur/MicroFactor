@@ -43,7 +43,7 @@ export default function Search() {
       <View className="flex-row p-2 items-center">
         <TextInput
           placeholder="search food item"
-          className="bg-white flex-1 rounded-l-xl px-3 h-12 text-base"
+          className="bg-white flex-1 rounded-l-xl px-3 h-12 text-base text-text-800"
           value={query}
           onChangeText={setQuery}
         />

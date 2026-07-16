@@ -4,7 +4,7 @@ import { microDisplayNames, NutrientLocal } from "@/utils/data";
 import { INFO } from "@/utils/info";
 import { getLifeStage, LifeStage, RDA } from "@/utils/rda";
 import SortedArray from "@/utils/sortedarray";
-import { getMeals, getTopSources, hasMeals, Meal } from "@/utils/storage";
+import { getMeals, getTopSources, hasMeals } from "@/utils/storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
@@ -30,13 +30,32 @@ export default function InformationPage() {
     RDA[(params.lifestage as LifeStage) ?? getLifeStage(false, 20)][id];
   const score = current / max_val[0];
   const [sources, setSources] = useState<SortedArray>(new SortedArray());
-  const [meals, setMeals] = useState<Record<string, Meal[]>>();
+  const [sourcesToday, setSourcesToday] = useState<SortedArray>(
+    new SortedArray(),
+  );
 
   useEffect(() => {
     async function loadMeals() {
-      const exists = await hasMeals(params.date as string);
-      const loadedMeals = await getMeals(params.date as string);
-      setMeals(loadedMeals);
+      const exists = await hasMeals(new Date().getDate().toString());
+      if (exists) {
+        const loadedMeals = await getMeals(new Date().getDate().toString());
+        // setMeals(loadedMeals);
+        const arr: [number, string][] = [];
+        Object.values(loadedMeals).forEach((meal) =>
+          meal.forEach((food) => {
+            console.log(food);
+            const x = food.nutrients.micros.find(
+              (nutrient) => nutrient.nutrientId === id,
+            );
+            if (x)
+              arr.push([
+                x.value,
+                [food.brandName, food.description].join(" ").trim(),
+              ]);
+          }),
+        );
+        setSourcesToday(new SortedArray(arr));
+      }
     }
 
     async function loadSources() {
@@ -46,7 +65,8 @@ export default function InformationPage() {
 
     loadMeals();
     loadSources();
-  });
+    console.log(sourcesToday);
+  }, []);
 
   return (
     <ScrollView className="base-view">
@@ -90,7 +110,15 @@ export default function InformationPage() {
       </View>
       <View className="micro-div">
         <Text className={headingStyle}>Today's Top Sources</Text>
-        {/* {micronutrients.find()} */}
+        {sourcesToday.length > 0 ? (
+          sourcesToday.toArray().map((x, i) => (
+            <Text key={i} className="text-text-50 text-l p-2">
+              {x[1]}
+            </Text>
+          ))
+        ) : (
+          <Text className="text-text-50 text-l p-2">Nothing to show here</Text>
+        )}
         <Text className="text-text-50 text-l p-2"></Text>
       </View>
     </ScrollView>

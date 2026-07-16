@@ -17,5 +17,5 @@
 }
 
 .micro-div {
-  @apply bg-primary-400/20 m-2;
+  @apply bg-primary-400/20 m-2 rounded-l;
 }

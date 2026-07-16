@@ -132,8 +132,8 @@ export default function Settings() {
   //STYLES
   const textStyle = "text-text-50 text-xl p-2 ml-2";
   return (
-    <ScrollView className="base-view">
-      <View className="flex-col p-2">
+    <ScrollView className="base-view justify-center">
+      <View className="flex-col p-2 flex-1">
         <View className="flex-row">
           <Text className={textStyle}>Sex</Text>
 
@@ -151,7 +151,7 @@ export default function Settings() {
           />
         </View>
 
-        {isFemale && age <= 50 && age >= 14 ? (
+        {(isFemale && age <= 50 && age >= 14) ?? (
           <View>
             <Text className={textStyle}>Pregnant?</Text>
 
@@ -182,8 +182,6 @@ export default function Settings() {
               }}
             />
           </View>
-        ) : (
-          ""
         )}
         <Text className={textStyle}>Age</Text>
         <TextInput

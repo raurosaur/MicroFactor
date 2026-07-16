@@ -1,9 +1,9 @@
-import { NutrientLocal } from "@/utils/data";
+import { microDisplayNames, NutrientLocal } from "@/utils/data";
 import { getLifeStage, LifeStage, RDA } from "@/utils/rda";
 import { getUserSettings, userSettings } from "@/utils/storage";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import NutrientElement from "./NutrientElement";
 
 type PropType = {
@@ -35,12 +35,19 @@ export default function MicroNutrientView({
     index();
   }, []);
   return (
-    <ScrollView className="macros nutrient-view flex-[4]">
+    <View className="macros nutrient-view ">
       <Text className={nutrient_heading_style}>MICRONUTRIENTS</Text>
 
-      {micronutrients
-        .filter((nutrient) => nutrient.nutrientId in max_value)
-        .map((nutrient) => (
+      {Object.keys(max_value).map((nutrientId) => {
+        const nutrient =
+          micronutrients.find((x) => x.nutrientId === +nutrientId) ??
+          ({
+            nutrientId: +nutrientId,
+            name: microDisplayNames[+nutrientId],
+            value: 0,
+            unitName: max_value[+nutrientId][1],
+          } as NutrientLocal);
+        return (
           <Link
             href={{
               pathname: "/Information",
@@ -64,7 +71,8 @@ export default function MicroNutrientView({
               />
             </TouchableOpacity>
           </Link>
-        ))}
-    </ScrollView>
+        );
+      })}
+    </View>
   );
 }
