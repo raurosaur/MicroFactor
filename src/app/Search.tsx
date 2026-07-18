@@ -1,6 +1,8 @@
 import { SearchResultFood } from "@/types/types";
+import { search, SearchOptions } from "@pdfnav/smart-text-search";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
+
 import {
   ScrollView,
   Text,
@@ -35,10 +37,10 @@ async function searchApi(
   }
 }
 const dataTypeRank: Record<string, number> = {
-  Foundation: 0,
-  SRLegacy: 1,
-  "Survey (FNDDS)": 2,
-  Branded: 3,
+  Foundation: 8,
+  SRLegacy: 6,
+  "Survey (FNDDS)": 4,
+  Branded: 0,
 };
 export default function Search() {
   const { name, date } = useLocalSearchParams();
@@ -77,10 +79,35 @@ export default function Search() {
       <ScrollView className="results flex-1">
         {result
           .sort((a, b) => {
-            const rankA = dataTypeRank[a.dataType ?? ""] ?? 999;
-            const rankB = dataTypeRank[b.dataType ?? ""] ?? 999;
+            const options: SearchOptions = {
+              exactMatchPoints: 120,
+              exactContainingMatchPoints: 90,
 
-            return rankA - rankB;
+              singleWordMatchPoints: 2,
+              singleWordMatchLengthMultiplier: 1,
+
+              uniqueSingleWordMatchPoints: 4,
+              uniqueSingleWordMatchLengthMultiplier: 1,
+
+              consecutiveWordMatchPoints: 25,
+              consecutiveWordMatchLengthMultiplier: 3,
+
+              consecutiveWordSequenceMatchPoints: 30,
+              consecutiveWordSequenceLengthMultiplier: 4,
+
+              isCaseSensitive: false,
+              shouldMatchPunctuation: false,
+              shouldMatchWhitespaceAndPunctuation: false,
+              shouldCollapseWhitespace: true,
+            };
+            const rankA =
+              (dataTypeRank[a.dataType ?? ""] ?? -2) +
+              search({ query, body: a.description, options });
+            const rankB =
+              (dataTypeRank[b.dataType ?? ""] ?? -2) +
+              search({ query, body: b.description, options });
+
+            return rankB - rankA;
           })
           .map((item) => {
             return (

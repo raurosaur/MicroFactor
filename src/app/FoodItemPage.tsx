@@ -75,49 +75,52 @@ export default function FoodItemPage() {
           {[brandName, description].join(" ")}
         </Text>
         <TextInput
-          className="bg-primary-200 text-xl rounded-xl text-center p-3 w-20"
-          placeholder="100g/mL"
+          className="bg-primary-200 text-l rounded-xl text-center p-3 w-24"
+          placeholder="100g/ml"
           // value={amount}
           onChangeText={(value) =>
             changeAmount(value === "" ? "100" : value, setAmount, setMultiplier)
           }
         />
       </View>
-      <MacroNutrientView
-        protein={
-          (nutrients.macros.find((x) => x.nutrientId === 1003)?.value ?? 0) *
-          multiplier
-        }
-        fats={
-          (nutrients.macros.find((x) => x.nutrientId === 1004)?.value ?? 0) *
-          multiplier
-        }
-        carbs={
-          (nutrients.macros.find((x) => x.nutrientId === 1005)?.value ?? 0) *
-          multiplier
-        }
-        energy={
-          (nutrients.macros.find((x) => x.nutrientId === 1008)?.value ?? 0) *
-          multiplier
-        }
-      />
-      <ScrollView className="flex-1">
-        <Text className="text-text-50 text-2xl p-2 bg-primary-600">
-          MICRONUTRIENTS
-        </Text>
-        {nutrients.micros.map((nutrient) => (
-          <View
-            className="bg-primary-400/40 p-1 flex-row justify-between mt-1"
-            key={nutrient.nutrientId}
-          >
-            <Text className={nutrientInfoStyle}>{nutrient.name}</Text>
-            <Text className={nutrientInfoStyle}>
-              {((nutrient.value ?? 0) * multiplier).toFixed(2)}{" "}
-              {nutrient.unitName.toLowerCase()}
-            </Text>
-          </View>
-        ))}
+      <ScrollView>
+        <MacroNutrientView
+          protein={
+            (nutrients.macros.find((x) => x.nutrientId === 1003)?.value ?? 0) *
+            multiplier
+          }
+          fats={
+            (nutrients.macros.find((x) => x.nutrientId === 1004)?.value ?? 0) *
+            multiplier
+          }
+          carbs={
+            (nutrients.macros.find((x) => x.nutrientId === 1005)?.value ?? 0) *
+            multiplier
+          }
+          energy={
+            (nutrients.macros.find((x) => x.nutrientId === 1008)?.value ?? 0) *
+            multiplier
+          }
+        />
+        <View className="flex-1">
+          <Text className="text-text-50 text-2xl p-2 bg-primary-600">
+            MICRONUTRIENTS
+          </Text>
+          {nutrients.micros.map((nutrient) => (
+            <View
+              className="bg-primary-400/40 p-1 flex-row justify-between mt-1"
+              key={nutrient.nutrientId}
+            >
+              <Text className={nutrientInfoStyle}>{nutrient.name}</Text>
+              <Text className={nutrientInfoStyle}>
+                {((nutrient.value ?? 0) * multiplier).toFixed(2)}{" "}
+                {nutrient.unitName.toLowerCase()}
+              </Text>
+            </View>
+          ))}
+        </View>
       </ScrollView>
+
       <TouchableOpacity
         className="bg-secondary-400 items-center mt-1"
         onPress={async () => {
