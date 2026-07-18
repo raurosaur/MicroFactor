@@ -76,7 +76,7 @@ export default function FoodItemPage() {
         </Text>
         <TextInput
           className="bg-primary-200 text-xl rounded-xl text-center p-3 w-20"
-          placeholder="100g"
+          placeholder="100g/mL"
           // value={amount}
           onChangeText={(value) =>
             changeAmount(value === "" ? "100" : value, setAmount, setMultiplier)

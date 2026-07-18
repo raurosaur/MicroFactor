@@ -17,6 +17,7 @@ async function searchApi(
   const params = new URLSearchParams({
     api_key: process.env.EXPO_PUBLIC_API_KEY as string,
     query: query.trim(),
+    // sortBy: "lowercaseDescription.keyword",
   });
   console.log(`https://api.nal.usda.gov/fdc/v1/foods/search?${params}`);
   const res = await fetch(
@@ -25,6 +26,7 @@ async function searchApi(
       method: "GET",
     },
   );
+  // console.log(res.headers.get("x-ratelimit-remaining"));
   console.log(res.headers.get("X-RateLimit-Remaining"));
   if (res.ok) {
     const resBody = await res.json();
@@ -32,20 +34,37 @@ async function searchApi(
     setResults(searchResults);
   }
 }
-
+const dataTypeRank: Record<string, number> = {
+  Foundation: 0,
+  SRLegacy: 1,
+  "Survey (FNDDS)": 2,
+  Branded: 3,
+};
 export default function Search() {
   const { name, date } = useLocalSearchParams();
   const [query, setQuery] = useState("");
   const [result, setResults] = useState<SearchResultFood[]>([]);
+  const [timeoutId, setTimeoutId] = useState(0);
+
   // console.log(result);
   return (
     <View className="base-view py-10 ">
       <View className="flex-row p-2 items-center">
         <TextInput
           placeholder="search food item"
-          className="bg-white flex-1 rounded-l-xl px-3 h-12 text-base text-text-800"
+          className="bg-white flex-1 rounded-l-xl px-3 h-12 text-text-800 font-semibold text-xl"
           value={query}
-          onChangeText={setQuery}
+          onChangeText={async (text) => {
+            clearTimeout(timeoutId);
+            setTimeoutId(
+              setTimeout(async () => {
+                if (text && text.length > 3) {
+                  await searchApi(text, setResults);
+                }
+              }, 1000),
+            );
+            setQuery(text);
+          }}
         />
 
         <TouchableOpacity
@@ -56,36 +75,43 @@ export default function Search() {
         </TouchableOpacity>
       </View>
       <ScrollView className="results flex-1">
-        {result.map((item) => {
-          return (
-            <Link
-              key={item.fdcId}
-              href={{
-                pathname: "/FoodItemPage",
-                params: {
-                  fdcId: item.fdcId,
-                  description: item.description,
-                  brandName: item.brandOwner ?? "",
-                  nutrients: JSON.stringify(
-                    item.foodNutrients?.filter(
-                      (nutrient) => nutrient.value && nutrient.value > 0,
+        {result
+          .sort((a, b) => {
+            const rankA = dataTypeRank[a.dataType ?? ""] ?? 999;
+            const rankB = dataTypeRank[b.dataType ?? ""] ?? 999;
+
+            return rankA - rankB;
+          })
+          .map((item) => {
+            return (
+              <Link
+                key={item.fdcId}
+                href={{
+                  pathname: "/FoodItemPage",
+                  params: {
+                    fdcId: item.fdcId,
+                    description: item.description,
+                    brandName: item.brandOwner ?? "",
+                    nutrients: JSON.stringify(
+                      item.foodNutrients?.filter(
+                        (nutrient) => nutrient.value && nutrient.value > 0,
+                      ),
                     ),
-                  ),
-                  mealtime: name,
-                  date: date,
-                },
-              }}
-              push
-              asChild
-            >
-              <TouchableOpacity className="">
-                <Text className="bg-primary-400/30 text-text-50 p-2">
-                  {`${item.brandOwner ?? ""} ${item.description.toLowerCase()}`}
-                </Text>
-              </TouchableOpacity>
-            </Link>
-          );
-        })}
+                    mealtime: name,
+                    date: date,
+                  },
+                }}
+                push
+                asChild
+              >
+                <TouchableOpacity className="">
+                  <Text className="bg-primary-400/30 text-text-50 text-xl p-1 my-[0.5]">
+                    {`${item.brandOwner ?? ""} ${item.description.toLowerCase()}`}
+                  </Text>
+                </TouchableOpacity>
+              </Link>
+            );
+          })}
       </ScrollView>
 
       <Link href="/Meals" push asChild>
