@@ -1,0 +1,1 @@
+// Source - https://stackoverflow.com/a/72444023// Posted by Glen Pereira// Retrieved 2026-07-23, License - CC BY-SA 4.0export ANDROID_HOME=/Users/$USER/Library/Android/sdkexport PATH=${PATH}:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools
