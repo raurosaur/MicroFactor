@@ -44,7 +44,7 @@ export default function BarcodeScanner() {
     }
 
     setScan(body.product.brands);
-
+    // console.log(body.product.nutriments);
     setTimeout(
       () =>
         router.replace({

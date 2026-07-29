@@ -38,6 +38,7 @@ export default function App() {
             ),
           },
         );
+        // console.log(totalDayNutrients);
       }
       async function calculateScore() {
         const nutrients = await getDailyNutrients(date.getDate());

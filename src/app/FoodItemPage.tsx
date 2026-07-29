@@ -121,18 +121,20 @@ export default function FoodItemPage() {
           <Text className="text-text-50 text-2xl p-2 bg-primary-600">
             MICRONUTRIENTS
           </Text>
-          {nutrients.micros.map((nutrient) => (
-            <View
-              className="bg-primary-400/40 p-1 flex-row justify-between mt-1"
-              key={nutrient.nutrientId}
-            >
-              <Text className={nutrientInfoStyle}>{nutrient.name}</Text>
-              <Text className={nutrientInfoStyle}>
-                {((nutrient.value ?? 0) * multiplier).toFixed(2)}{" "}
-                {nutrient.unitName.toLowerCase()}
-              </Text>
-            </View>
-          ))}
+          {nutrients.micros
+            .filter((nutrient) => nutrient.value > 0)
+            .map((nutrient) => (
+              <View
+                className="bg-primary-400/40 p-1 flex-row justify-between mt-1"
+                key={nutrient.nutrientId}
+              >
+                <Text className={nutrientInfoStyle}>{nutrient.name}</Text>
+                <Text className={nutrientInfoStyle}>
+                  {((nutrient.value ?? 0) * multiplier).toFixed(2)}{" "}
+                  {nutrient.unitName.toLowerCase()}
+                </Text>
+              </View>
+            ))}
         </View>
       </ScrollView>
 
