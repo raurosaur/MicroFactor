@@ -67,7 +67,7 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
     1175: [0.5, "mg"], //Vitamin B6
     1177: [150, "mcg"], //Folate
     1178: [0.9, "mcg"], //Vitamin B12
-    1170: [2, "mgd"], //Pantothenic Acid
+    1170: [2, "mg"], //Pantothenic Acid
     1176: [8, "mcg"], //Biotin
     1180: [200, "mg"], //Choline
   },
@@ -83,7 +83,7 @@ export const RDA: Record<LifeStage, Record<number, [number, string]>> = {
     1175: [0.6, "mg"], //Vitamin B6
     1177: [200, "mcg"], //Folate
     1178: [1.2, "mcg"], //Vitamin B12
-    1170: [3, "mgd"], //Pantothenic Acid
+    1170: [3, "mg"], //Pantothenic Acid
     1176: [12, "mcg"], //Biotin
     1180: [250, "mg"], //Choline
   },

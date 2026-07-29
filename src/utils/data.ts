@@ -137,6 +137,13 @@ export function cleanNutrients(nutrients: Array<FoodNutrient>) {
 
   return nutriObject;
 }
+/**
+ * preprocesses the nutriment object returned from the open food api
+ * and returns a cleaned version with display names and macros and micros split
+ *
+ * @param nutriments nutriments returned by the api
+ * @returns Nutrient Object with macro array and micro array
+ */
 export function processNutriments(nutriments: Record<string, number | string>) {
   const nutriObject: NutrientObject = { macros: [], micros: [] };
 
@@ -174,18 +181,13 @@ export function processNutriments(nutriments: Record<string, number | string>) {
 
       if (name in microNameToId) {
         const id = microNameToId[name.split("_")[0]];
+        const [convertedVal, unit] = normalizeUnit(val as number, id);
         nutriObject.micros.push(
-          NutrientLocal(
-            id,
-            val as number,
-            nutriments[`${name}_unit`] as string,
-            microDisplayNames[id],
-          ),
+          NutrientLocal(id, convertedVal, unit, microDisplayNames[id]),
         );
       }
     }
   });
-
   return nutriObject;
 }
 /**
@@ -275,4 +277,20 @@ export function dateNext(setDate: React.Dispatch<React.SetStateAction<Date>>) {
     next.setDate(next.getDate() + 1);
     return next;
   });
+}
+/**
+ * Normalizes the values returned in (g) to RDA appropriate units
+ * @param value value of micronutrient
+ * @param nutrientId micronutrient id
+ * @returns [value of micronutrient, unit of micronutrient]
+ */
+export function normalizeUnit(
+  value: number,
+  nutrientId: number,
+): [number, string] {
+  if ([1106, 1114, 1185, 1177, 1178, 1176].includes(nutrientId))
+    return [value * 1e6, "mcg"];
+  if ([1162, 1109, 1165, 1166, 1167, 1175, 1170, 1180].includes(nutrientId))
+    return [value * 1e3, "mg"];
+  return [0, "g"];
 }
