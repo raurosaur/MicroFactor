@@ -18,17 +18,22 @@ type MicroInfoType = {
 
 export default function InformationPage() {
   const params = useLocalSearchParams();
-  const id = +params.id;
-  const information = INFO[id];
+  const id = +params.id; // nutrient id
+  const information = INFO[id]; // info string from info.ts
+
+  //STYLES
   const headingStyle = "text-secondary-500 text-2xl p-2 font-bold";
+
   const micronutrients = JSON.parse(
     params.micronutrients as string,
-  ) as NutrientLocal[];
+  ) as NutrientLocal[]; // current date micronutrient array
   const current =
-    micronutrients?.find((nutrient) => nutrient.nutrientId === +id)?.value ?? 0;
+    micronutrients?.find((nutrient) => nutrient.nutrientId === +id)?.value ?? 0; //current date value
   const max_val =
-    RDA[(params.lifestage as LifeStage) ?? getLifeStage(false, 20)][id];
+    RDA[(params.lifestage as LifeStage) ?? getLifeStage(false, 20)][id]; //RDA
   const score = current / max_val[0];
+
+  //STATES
   const [sources, setSources] = useState<SortedArray>(new SortedArray());
   const [sourcesToday, setSourcesToday] = useState<SortedArray>(
     new SortedArray(),

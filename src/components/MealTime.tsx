@@ -9,7 +9,7 @@ type MealTimeType = {
 };
 
 export default function MealTime({ name, meal, date }: MealTimeType) {
-  const textStyle = "text-text-50 p-3 text-xl";
+  const textStyle = "text-text-50 p-3 text-xl truncate";
   return (
     <View className="my-2">
       <View className="flex-row justify-between items-center bg-secondary-800">
@@ -53,7 +53,11 @@ export default function MealTime({ name, meal, date }: MealTimeType) {
                     text: "Delete",
                     style: "destructive",
                     onPress: async () => {
-                      await deleteMeal(mealItem.id, mealItem.mealtime);
+                      await deleteMeal(
+                        mealItem.id,
+                        mealItem.mealtime,
+                        date.getDate(),
+                      );
                       // reload meals or update state here
                     },
                   },
@@ -61,7 +65,7 @@ export default function MealTime({ name, meal, date }: MealTimeType) {
               );
             }}
           >
-            <Text className={textStyle}>
+            <Text numberOfLines={1} className="text-text-50 p-3 text-xl flex-1">
               {(mealItem?.brandName + " " + mealItem.description).trim()}
             </Text>
             <Text className={textStyle}>

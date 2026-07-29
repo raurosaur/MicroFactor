@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 
 export default function DailyScore({ score = 0 }: { score?: number }) {
-  console.log(score);
+  // console.log(score);
   return (
     <View className="h-40 w-40 border-8 border-accent-500 justify-center items-center rounded-full">
       <Text

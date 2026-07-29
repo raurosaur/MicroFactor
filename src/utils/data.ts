@@ -19,6 +19,37 @@ export const macroDisplayNames: Record<number, string> = {
   1013: "Lactose",
   1014: "Maltose",
 };
+export const microNameToId: Record<string, number> = {
+  sodium: 1093,
+  fiber: 1079,
+
+  // Minerals
+  calcium: 1087,
+  iron: 1089,
+  magnesium: 1090,
+  phosphorus: 1091,
+  potassium: 1092,
+  zinc: 1095,
+  copper: 1098,
+  manganese: 1101,
+  selenium: 1103,
+
+  // Vitamins
+  "vitamin-a": 1106,
+  "vitamin-d": 1114,
+  "vitamin-c": 1162,
+  thiamin: 1165,
+  riboflavin: 1166,
+  niacin: 1167,
+  "pantothenic-acid": 1170,
+  "vitamin-b6": 1175,
+  biotin: 1176,
+  folate: 1177,
+  "vitamin-b12": 1178,
+  choline: 1180,
+  "vitamin-k": 1185,
+  "vitamin-e": 1109,
+};
 export const microDisplayNames: Record<number, string> = {
   1093: "Sodium",
   1079: "Fiber",
@@ -59,6 +90,25 @@ export type NutrientObject = {
   macros: NutrientLocal[];
   micros: NutrientLocal[];
 };
+
+function NutrientLocal(
+  nutrientId: number,
+  value: number,
+  unitName: string,
+  name: string,
+): NutrientLocal {
+  return { nutrientId, value, unitName, name };
+}
+
+/**
+ *
+ * preprocesses the nutrient object and returns a cleaned version with display names and macros and micros split
+ *
+ * @param nutrients - array containining all the nutrients
+ *
+ * @returns Nutrient Object with macro array and micro array
+ *
+ */
 export function cleanNutrients(nutrients: Array<FoodNutrient>) {
   const nutriObject: NutrientObject = { macros: [], micros: [] };
 
@@ -87,7 +137,70 @@ export function cleanNutrients(nutrients: Array<FoodNutrient>) {
 
   return nutriObject;
 }
+export function processNutriments(nutriments: Record<string, number | string>) {
+  const nutriObject: NutrientObject = { macros: [], micros: [] };
 
+  nutriObject.macros.push(
+    NutrientLocal(
+      1003,
+      (nutriments["proteins_serving"] as number) ?? 0,
+      (nutriments["proteins_unit"] as string) ?? "g",
+      macroDisplayNames[1003],
+    ),
+    NutrientLocal(
+      1005,
+      nutriments["carbohydrates_serving"] as number,
+      nutriments["carbohydrates_unit"] as string,
+      macroDisplayNames[1005],
+    ),
+    NutrientLocal(
+      1004,
+      nutriments["fat_serving"] as number,
+      nutriments["fat_unit"] as string,
+      macroDisplayNames[1004],
+    ),
+    NutrientLocal(
+      1008,
+      nutriments["energy-kcal_serving"] as number,
+      nutriments["energy-kcal_unit"] as string,
+      macroDisplayNames[1008],
+    ),
+  );
+
+  Object.entries(nutriments).map((value) => {
+    if (value[0].endsWith("serving")) {
+      const name = value[0].split("_")[0];
+      const val = value[1];
+
+      if (name in microNameToId) {
+        const id = microNameToId[name.split("_")[0]];
+        nutriObject.micros.push(
+          NutrientLocal(
+            id,
+            val as number,
+            nutriments[`${name}_unit`] as string,
+            microDisplayNames[id],
+          ),
+        );
+      }
+    }
+  });
+
+  return nutriObject;
+}
+/**
+ *
+ * computes the BMR using the Mifflin-St Jeor Equation
+ *
+ * @param height - height in cm
+ * @param weight - weight in kg
+ * @param age - age of user
+ * @param isFemale - boolean value for if user is female
+ * @param act - activity level of user. one of 5 values
+ *
+ * @returns bmr value
+ *
+ */
 export function calculateBMR(
   height: number,
   weight: number,
@@ -97,10 +210,17 @@ export function calculateBMR(
 ) {
   // Mifflin-St Jeor Equation:
   const x = 10 * weight + 6.25 * height - 5 * age;
-  // console.log(act);
+
   return act * (x + (isFemale ? -161 : 5));
 }
 
+/**
+ * checks if current date is today
+ *
+ * @param date - date object of current page
+ *
+ * @returns True/False
+ */
 export function isToday(date: Date) {
   const today = new Date();
   return (
@@ -108,6 +228,13 @@ export function isToday(date: Date) {
   );
 }
 
+/**
+ * checks if current date is within the past week
+ *
+ * @param date - current date
+ *
+ * @returns True/False
+ */
 export function withinWeekFromToday(date: Date) {
   const today = new Date();
 
@@ -121,6 +248,13 @@ export function withinWeekFromToday(date: Date) {
 
   return diffDays >= 0 && diffDays <= 7;
 }
+/**
+ * sets the current date to previous
+ *
+ * @param setDate - setState react function
+ *
+ *
+ */
 export function datePrev(setDate: React.Dispatch<React.SetStateAction<Date>>) {
   setDate((prev) => {
     const next = new Date(prev);
@@ -128,6 +262,13 @@ export function datePrev(setDate: React.Dispatch<React.SetStateAction<Date>>) {
     return next;
   });
 }
+/**
+ * sets the current date to next day
+ *
+ * @param setDate - setState react function
+ *
+ *
+ */
 export function dateNext(setDate: React.Dispatch<React.SetStateAction<Date>>) {
   setDate((prev) => {
     const next = new Date(prev);

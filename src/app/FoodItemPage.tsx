@@ -1,5 +1,5 @@
 import MacroNutrientView from "@/components/MacroNutrientView";
-import { cleanNutrients, NutrientObject } from "@/utils/data";
+import { NutrientObject } from "@/utils/data";
 import { addMeals } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
@@ -12,21 +12,24 @@ import {
   View,
 } from "react-native";
 
-function changeAmount(
-  value: string,
-  setAmount: React.Dispatch<React.SetStateAction<string>>,
-  setMulitplier: React.Dispatch<React.SetStateAction<number>>,
-) {
-  setAmount(value);
-  setMulitplier(+value / 100);
-}
-
+/**
+ * Adds the food item to the current day's meal object and returns to the meal page
+ *
+ * @param fdcId fdc id of food item as per USDA
+ * @param description the name of the item
+ * @param brandName brand name if it exists
+ * @param nutrients nutrient array
+ * @param amount value of the food item (usually in g/ml)
+ * @param multiplier amount / 100
+ * @param mealtime breakfast | lunch | dinner | snacks
+ * @param date current date (1-31)
+ */
 async function AddToToday(
   fdcId: string,
   description: string,
   brandName: string,
   nutrients: NutrientObject,
-  amount: string,
+  amount: number,
   multiplier: number,
   mealtime: "breakfast" | "lunch" | "dinner" | "snacks",
   date: string,
@@ -48,7 +51,7 @@ async function AddToToday(
     description,
     brandName,
     newNutrients,
-    amount,
+    amount.toString(),
     mealtime,
     date,
   );
@@ -58,13 +61,27 @@ async function AddToToday(
 
 export default function FoodItemPage() {
   const params = useLocalSearchParams();
-  const { fdcId, description, brandName, mealtime, date } = params;
-  const nutrients = cleanNutrients(JSON.parse(params.nutrients as string));
-  const [amount, setAmount] = useState("100");
+
+  const { fdcId, description, brandName, mealtime, date, portion } = params;
+
+  const serving = +params.serving;
+
+  const nutrients = JSON.parse(params.nutrients as string) as NutrientObject;
+
+  const [amount, setAmount] = useState(serving ?? 100);
   const [multiplier, setMultiplier] = useState(1);
+
+  //STYLES
   const nutrientInfoStyle = "text-text-50 text-xl";
   const styleTextHeader = "text-white text-xl text-bold text-center flex-1 p-4";
-  // console.log(nutrients.micros);
+  /**
+   *
+   * @param value
+   */
+  function changeAmount(value: string) {
+    setAmount(+value);
+    setMultiplier(+value / serving);
+  }
   return (
     <View className="base-view py-10">
       <View className="hdr flex-row justify-between items-center p-4">
@@ -76,11 +93,9 @@ export default function FoodItemPage() {
         </Text>
         <TextInput
           className="bg-primary-200 text-l rounded-xl text-center p-3 w-24"
-          placeholder="100g/ml"
+          placeholder={(portion as string) ?? "100g/ml"}
           // value={amount}
-          onChangeText={(value) =>
-            changeAmount(value === "" ? "100" : value, setAmount, setMultiplier)
-          }
+          onChangeText={changeAmount}
         />
       </View>
       <ScrollView>
