@@ -90,7 +90,14 @@ export type NutrientObject = {
   macros: NutrientLocal[];
   micros: NutrientLocal[];
 };
-
+/**
+ * Creates a new NutrientLocal Object
+ * @param nutrientId nutrient id
+ * @param value value of nutrient
+ * @param unitName unit name (g, mcg, mg,etc)
+ * @param name display name
+ * @returns Nutrient Local Object
+ */
 function NutrientLocal(
   nutrientId: number,
   value: number,
