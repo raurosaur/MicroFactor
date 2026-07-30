@@ -1,5 +1,6 @@
 import { FoodNutrient, SearchResultFood } from "@/types/types";
 import { cleanNutrients } from "@/utils/data";
+import { getCache, saveCache } from "@/utils/storage";
 import { search, SearchOptions } from "@pdfnav/smart-text-search";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
@@ -11,42 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-/**
- * Loads the search results to setResults.
- *
- * @remarks
- * Searches the USDA API
- *
- * @param query - the results to search
- * @param setResult - set result state
- *
- * @beta
- */
-async function searchApi(
-  query: string,
-  setResults: React.Dispatch<React.SetStateAction<SearchResultFood[]>>,
-) {
-  if (!query.trim()) return;
-  const params = new URLSearchParams({
-    api_key: process.env.EXPO_PUBLIC_API_KEY as string,
-    query: query.trim(),
-  });
-  console.log(`https://api.nal.usda.gov/fdc/v1/foods/search?${params}`);
-  const res = await fetch(
-    `https://api.nal.usda.gov/fdc/v1/foods/search?${params}`,
-    {
-      method: "GET",
-    },
-  );
-  // console.log(res.headers.get("x-ratelimit-remaining"));
-  console.log(res.headers.get("X-RateLimit-Remaining"));
-  if (res.ok) {
-    const resBody = await res.json();
-    const searchResults = resBody.foods;
-    setResults(searchResults);
-  }
-}
 
 /**
  * returns rank for a given search result given the query
@@ -106,6 +71,49 @@ export default function Search() {
   const BUTTON_STYLES_WRAPPER =
     "bg-secondary-600 rounded-r-xl px-4 h-12 items-center justify-center";
 
+  /**
+   * Loads the search results to setResults.
+   *
+   * @remarks
+   * Searches the USDA API
+   *
+   * @param query - the results to search
+   * @param setResult - set result state
+   *
+   * @beta
+   */
+  async function searchApi(query: string) {
+    if (!query.trim()) return;
+
+    const cache = await getCache();
+
+    if (cache.has(query)) {
+      setResults(cache.get(query) ?? []);
+      return;
+    }
+
+    const params = new URLSearchParams({
+      api_key: process.env.EXPO_PUBLIC_API_KEY as string,
+      query: query.trim(),
+    });
+    console.log(`https://api.nal.usda.gov/fdc/v1/foods/search?${params}`);
+    const res = await fetch(
+      `https://api.nal.usda.gov/fdc/v1/foods/search?${params}`,
+      {
+        method: "GET",
+      },
+    );
+    // console.log(res.headers.get("x-ratelimit-remaining"));
+    console.log(res.headers.get("X-RateLimit-Remaining"));
+    if (res.ok) {
+      const resBody = await res.json();
+      const searchResults = resBody.foods;
+      setResults(searchResults);
+      cache.set(query, searchResults);
+      saveCache(cache);
+    }
+  }
+
   return (
     <View className="base-view py-10 ">
       <View className="flex-col p-2 items-center">
@@ -119,7 +127,7 @@ export default function Search() {
               setTimeoutId(
                 setTimeout(async () => {
                   if (text && text.length > 3) {
-                    await searchApi(text, setResults);
+                    await searchApi(text);
                   }
                 }, 1000),
               );
@@ -128,7 +136,7 @@ export default function Search() {
           />
 
           <TouchableOpacity
-            onPress={async () => searchApi(query, setResults)}
+            onPress={async () => searchApi(query)}
             className={BUTTON_STYLES_WRAPPER}
           >
             <Text className={BUTTON_STYLES}>Search</Text>

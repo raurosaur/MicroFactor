@@ -1,6 +1,8 @@
+import { SearchResultFood } from "@/types/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NutrientObject } from "./data";
 import { INFO } from "./info";
+import LRUCache from "./LRU";
 import SortedArray from "./sortedarray";
 
 export type Meal = {
@@ -275,4 +277,21 @@ export async function getUserSettings(): Promise<userSettings> {
 export async function setUserSettings(settings: userSettings) {
   console.log(settings);
   await AsyncStorage.setItem("settings", JSON.stringify(settings));
+}
+
+/**
+ * Retrieves the lru cache from async storage
+ * @returns LRU Cache
+ */
+export async function getCache() {
+  const dump = await AsyncStorage.getItem("cache");
+  const lru = new LRUCache<SearchResultFood[]>({ max: 50, ttl: 1e7 }, dump);
+  return lru;
+}
+
+/**
+ * Saves the cache to async storage
+ */
+export async function saveCache(cache: LRUCache<SearchResultFood[]>) {
+  await AsyncStorage.setItem("cache", cache.dump());
 }

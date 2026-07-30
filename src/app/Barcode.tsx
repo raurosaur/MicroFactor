@@ -76,8 +76,8 @@ export default function BarcodeScanner() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View className="base-view">
-        <Text style={styles.message}>
+      <View className="base-view justify-center">
+        <Text className="text-text-50 bg-secondary-500 p-2">
           We need your permission to show the camera
         </Text>
         <Button onPress={requestPermission} title="grant permission" />
