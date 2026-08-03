@@ -1,13 +1,6 @@
 import { setUserSettings, userSettings } from "@/utils/storage";
 import { useMemo, useState } from "react";
-import {
-  Alert,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import RadioGroup, { RadioButtonProps } from "react-native-radio-buttons-group";
 export default function Settings() {
   const [age, setAge] = useState(20);
@@ -27,7 +20,7 @@ export default function Settings() {
       color: "white",
     },
   };
-
+  const macroInputStyle = "flex-row";
   //RADIO BUTTON: SEX
   const sexRadioButton: RadioButtonProps[] = useMemo(
     () => [
@@ -132,8 +125,8 @@ export default function Settings() {
   //STYLES
   const textStyle = "text-text-50 text-xl p-2 ml-2";
   return (
-    <ScrollView className="base-view justify-center">
-      <View className="flex-col p-2 flex-1">
+    <View className="base-view">
+      <View className="flex-col p-2 mt-5 flex-1 pt-10">
         <View className="flex-row">
           <Text className={textStyle}>Sex</Text>
 
@@ -226,35 +219,41 @@ export default function Settings() {
             justifyContent: "space-around",
           }}
         />
-        <View className="flex-row my-4">
-          <Text className={textStyle}>Protein</Text>
-          <TextInput
-            className="bg-primary-200 rounded-xl text-center text-xl w-14"
-            placeholder="30%"
-            onChangeText={(protein) => {
-              if (Number.isInteger(+protein)) setProtein(+protein / 100);
-            }}
-          />
-          <Text className={textStyle}>Fats</Text>
-          <TextInput
-            className="bg-primary-200 rounded-xl text-center text-xl w-14"
-            placeholder="30%"
-            onChangeText={(fats) => {
-              if (Number.isInteger(+fats)) setFats(+fats / 100);
-            }}
-          />
-          <Text className={textStyle}>Carbs</Text>
-          <TextInput
-            className="bg-primary-200 rounded-xl text-center text-xl w-14"
-            placeholder="40%"
-            onChangeText={(carbs) => {
-              if (Number.isInteger(+carbs)) setCarbs(+carbs / 100);
-            }}
-          />
+        <View className="flex-row my-4 flex-wrap justify-evenly">
+          <View className={macroInputStyle}>
+            <Text className={textStyle}>Protein</Text>
+            <TextInput
+              className="bg-primary-200 rounded-xl text-center text-xl w-14"
+              placeholder="30%"
+              onChangeText={(protein) => {
+                if (Number.isInteger(+protein)) setProtein(+protein / 100);
+              }}
+            />
+          </View>
+          <View className={macroInputStyle}>
+            <Text className={textStyle}>Fats</Text>
+            <TextInput
+              className="bg-primary-200 rounded-xl text-center text-xl w-14"
+              placeholder="30%"
+              onChangeText={(fats) => {
+                if (Number.isInteger(+fats)) setFats(+fats / 100);
+              }}
+            />
+          </View>
+          <View className={macroInputStyle}>
+            <Text className={textStyle}>Carbs</Text>
+            <TextInput
+              className="bg-primary-200 rounded-xl text-center text-xl w-14"
+              placeholder="40%"
+              onChangeText={(carbs) => {
+                if (Number.isInteger(+carbs)) setCarbs(+carbs / 100);
+              }}
+            />
+          </View>
         </View>
       </View>
       <TouchableOpacity
-        className="bg-secondary-500 w-3/4 rounded-xl self-center m-10"
+        className="bg-secondary-500 w-3/4 rounded-xl self-center m-10 "
         onPress={async () => {
           if (protein + fats + carbs !== 1) {
             Alert.alert("error", "Macros must add up to 100");
@@ -277,6 +276,6 @@ export default function Settings() {
       >
         <Text className={textStyle + "  text-center"}>Save</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 }

@@ -1,7 +1,9 @@
 import DailyScore from "@/components/DailyScore";
 import Header from "@/components/header";
+import LoginForm from "@/components/LoginForm";
 import MacroNutrientView from "@/components/MacroNutrientView";
 import MicroNutrientView from "@/components/MicroNutrientView";
+import { useAuth } from "@/context/auth";
 import {
   calculateBMR,
   microDisplayNames,
@@ -12,16 +14,19 @@ import { getLifeStage, RDA } from "@/utils/rda";
 import { getDailyNutrients, getUserSettings } from "@/utils/storage";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ScrollView, View } from "react-native";
-
+import { ActivityIndicator, ScrollView, View } from "react-native";
 export default function App() {
   const [totalDayNutrients, setTotalDayNutrients] = useState<NutrientObject>();
   const [date, setDate] = useState<Date>(new Date());
   const [score, setScore] = useState(0);
   const [lifestage, setLifeStage] = useState(getLifeStage(false, 20));
+  const { user, isLoading } = useAuth();
+
+  // console.log(user);
 
   useFocusEffect(
     useCallback(() => {
+      console.log(user);
       async function loadMeals() {
         const daily = await getDailyNutrients(date.getDate());
         setTotalDayNutrients(
@@ -86,8 +91,19 @@ export default function App() {
       }
       loadMeals();
       calculateScore();
-    }, [date]),
+    }, [date, user]),
   );
+
+  if (isLoading) {
+    return (
+      <View className="base-view">
+        <ActivityIndicator />
+      </View>
+    );
+  }
+  if (!user) {
+    return <LoginForm />;
+  }
   return (
     <ScrollView className="base-view">
       <Header date={date} setDate={setDate} />
