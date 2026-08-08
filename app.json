@@ -4,7 +4,7 @@
     "slug": "microfactor",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/logo_full_dark.png",
     "scheme": "microfactor",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -13,11 +13,15 @@
     },
     "android": {
       "predictiveBackGestureEnabled": false,
-      "package": "com.raurosaur.microfactor"
+      "package": "com.raurosaur.microfactor",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo_full_dark.png",
+        "backgroundColor": "#153151"
+      }
     },
     "web": {
       "output": "server",
-      "favicon": "./assets/images/logo.png",
+      "favicon": "./assets/images/logo_full_dark.png",
       "bundler": "metro"
     },
     "plugins": [

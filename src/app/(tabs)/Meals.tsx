@@ -5,7 +5,8 @@ import { NutrientObject } from "@/utils/data";
 import { getDailyNutrients, getMeals, hasMeals, Meal } from "@/utils/storage";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Meals() {
   const [meals, setMeals] = useState<Record<string, Meal[]>>();
@@ -39,7 +40,7 @@ export default function Meals() {
     }, [date]),
   );
   return (
-    <View className="base-view">
+    <SafeAreaView className="base-view">
       <Header date={date} setDate={setDate} />
       <ScrollView className="flex-1">
         <MacroNutrientView
@@ -65,6 +66,6 @@ export default function Meals() {
         <MealTime name="Dinner" meal={meals?.dinner} date={date} />
         <MealTime name="Snacks" meal={meals?.snacks} date={date} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

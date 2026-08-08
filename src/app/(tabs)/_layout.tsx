@@ -1,20 +1,19 @@
-import { useAuth } from "@/context/auth";
 import { colors } from "@/styles/global";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 export default function TabLayout() {
-  const { user, isLoading } = useAuth();
-
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          display: !user || isLoading ? "none" : "flex",
           backgroundColor: colors.background,
           borderTopColor: "#FFFFFF",
         },
+        tabBarActiveTintColor: colors.background,
+        tabBarActiveBackgroundColor: "#d7e2f4",
+        tabBarInactiveTintColor: "#d7e2f4",
       }}
     >
       <Tabs.Screen

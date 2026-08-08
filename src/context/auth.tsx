@@ -43,6 +43,8 @@ export type AuthUser = {
   email_verified?: string;
   exp?: number;
   cookieExpiration?: number;
+  picture?: string;
+  name?: string;
 } & userSettings;
 
 const AuthContext = createContext({

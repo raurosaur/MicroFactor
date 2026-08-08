@@ -1,6 +1,5 @@
 import DailyScore from "@/components/DailyScore";
 import Header from "@/components/header";
-import LoginForm from "@/components/LoginForm";
 import MacroNutrientView from "@/components/MacroNutrientView";
 import MicroNutrientView from "@/components/MicroNutrientView";
 import { useAuth } from "@/context/auth";
@@ -15,6 +14,7 @@ import { getDailyNutrients, getUserSettings } from "@/utils/storage";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 export default function App() {
   const [totalDayNutrients, setTotalDayNutrients] = useState<NutrientObject>();
   const [date, setDate] = useState<Date>(new Date());
@@ -101,38 +101,40 @@ export default function App() {
       </View>
     );
   }
-  if (!user) {
-    return <LoginForm />;
-  }
+  // if (!user) {
+  //   return <LoginForm />;
+  // }
   return (
-    <ScrollView className="base-view">
-      <Header date={date} setDate={setDate} />
-      <View className="flex-[2] justify-center items-center">
-        <DailyScore score={score * 100} />
-      </View>
-      <MacroNutrientView
-        protein={
-          totalDayNutrients?.macros.find((x) => x.nutrientId === 1003)?.value ??
-          0
-        }
-        fats={
-          totalDayNutrients?.macros.find((x) => x.nutrientId === 1004)?.value ??
-          0
-        }
-        carbs={
-          totalDayNutrients?.macros.find((x) => x.nutrientId === 1005)?.value ??
-          0
-        }
-        energy={
-          totalDayNutrients?.macros.find((x) => x.nutrientId === 1008)?.value ??
-          0
-        }
-      />
-      <MicroNutrientView
-        micronutrients={totalDayNutrients?.micros ?? []}
-        lifestage={lifestage}
-        date={date}
-      />
-    </ScrollView>
+    <SafeAreaView className="base-view" edges={["top"]}>
+      <ScrollView className="h-full">
+        <Header date={date} setDate={setDate} />
+        <View className="flex-[2] justify-center items-center">
+          <DailyScore score={score * 100} />
+        </View>
+        <MacroNutrientView
+          protein={
+            totalDayNutrients?.macros.find((x) => x.nutrientId === 1003)
+              ?.value ?? 0
+          }
+          fats={
+            totalDayNutrients?.macros.find((x) => x.nutrientId === 1004)
+              ?.value ?? 0
+          }
+          carbs={
+            totalDayNutrients?.macros.find((x) => x.nutrientId === 1005)
+              ?.value ?? 0
+          }
+          energy={
+            totalDayNutrients?.macros.find((x) => x.nutrientId === 1008)
+              ?.value ?? 0
+          }
+        />
+        <MicroNutrientView
+          micronutrients={totalDayNutrients?.micros ?? []}
+          lifestage={lifestage}
+          date={date}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 }

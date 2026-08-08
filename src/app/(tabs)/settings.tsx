@@ -1,7 +1,18 @@
+import { useAuth } from "@/context/auth";
 import { setUserSettings, userSettings } from "@/utils/storage";
 import { useMemo, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import RadioGroup, { RadioButtonProps } from "react-native-radio-buttons-group";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function Settings() {
   const [age, setAge] = useState(20);
   const [isFemale, setIsFemale] = useState(false);
@@ -124,9 +135,56 @@ export default function Settings() {
 
   //STYLES
   const textStyle = "text-text-50 text-xl p-2 ml-2";
+
+  const { user, isLoading, signIn, signOut } = useAuth();
+  console.log(user);
+
+  const styles = StyleSheet.create({
+    image: { width: "100%", height: "100%", resizeMode: "cover" },
+    accountHeader: {
+      flexDirection: "row",
+      width: "100%",
+      justifyContent: "space-between",
+    },
+  });
+
+  function logout() {
+    Alert.alert("Logout", "Do you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: signOut,
+      },
+    ]);
+  }
   return (
-    <View className="base-view">
-      <View className="flex-col p-2 mt-5 flex-1 pt-10">
+    <SafeAreaView className="base-view">
+      {user ? (
+        <View style={styles.accountHeader}>
+          <Text className="p-6 text-text-200 text-2xl content-center font-bold">
+            {user?.name?.toLocaleUpperCase()}
+          </Text>
+          <TouchableOpacity
+            className="self-end m-2 rounded-full w-16 h-16 overflow-hidden"
+            onPress={logout}
+          >
+            <Image style={styles.image} source={{ uri: user?.picture }} />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <TouchableOpacity
+          className="self-center p-4 bg-primary-500 rounded-xl m-2"
+          onPress={signIn}
+        >
+          <Text className="text-text-200">SignIn using Google</Text>
+        </TouchableOpacity>
+      )}
+
+      <View className="flex-col p-2 flex-1">
         <View className="flex-row">
           <Text className={textStyle}>Sex</Text>
 
@@ -276,6 +334,6 @@ export default function Settings() {
       >
         <Text className={textStyle + "  text-center"}>Save</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
